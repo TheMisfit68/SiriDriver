@@ -2,8 +2,8 @@ import Cocoa
 import AVFoundation
 
 // REMARK!!!
-// Making this class a subclass AVSpeechSynthesizer instead of using it
-// causes the synthesizer to work only once!
+// Don't make this class a subclass of AVSpeechSynthesizer (instead of just using it)
+// it causes the synthesizer to work only once!
 
 @available(OSX 10.14, *)
 public class SiriDriver{
