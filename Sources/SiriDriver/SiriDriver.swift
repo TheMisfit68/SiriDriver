@@ -9,31 +9,25 @@ import AVFoundation
 public class SiriDriver{
     
     var syntheSizer:AVSpeechSynthesizer!
-    let voice:AVSpeechSynthesisVoice!
-    let speedRate:Float
+    let voice:AVSpeechSynthesisVoice = AVSpeechSynthesisVoice(language: AVSpeechSynthesisVoice.currentLanguageCode())!
+    let rate:Float
     
-    public init(language:SiriLanguage, speedAsPercentage:Float = 50.0){
-        self.voice = AVSpeechSynthesisVoice(language: language.rawValue)
+    public init(speedAsPercentage:Float = 50.0){
+               
+        let rateAsPercentage = min(max(speedAsPercentage, 0.0), 100.0) // Limit between 0 and 100
+        self.rate = (AVSpeechUtteranceMaximumSpeechRate-AVSpeechUtteranceMinimumSpeechRate)*(rateAsPercentage/100.0)
         
-        let speedRateAsPercentage = min(max(speedAsPercentage, 0.0), 100.0) // Limit between 0 and 100
-        speedRate = (AVSpeechUtteranceMaximumSpeechRate-AVSpeechUtteranceMinimumSpeechRate)*(speedRateAsPercentage/100.0)
     }
     
     public func speak(text: String){
         
         let textToSpeak = AVSpeechUtterance(string: text)
         textToSpeak.voice = self.voice
-        
-        textToSpeak.rate = self.speedRate
+        textToSpeak.rate = self.rate
         
         syntheSizer = AVSpeechSynthesizer()
         syntheSizer.pauseSpeaking(at: .word)
         syntheSizer.speak(textToSpeak)
     }
     
-}
-
-public enum SiriLanguage:String{
-    case flemish = "nl-be"
-    case american = "en-us"
 }
