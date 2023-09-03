@@ -12,9 +12,11 @@ public class SiriDriver{
     let voice:AVSpeechSynthesisVoice!
     let speedRate:Float
     
-    public init(language:SiriLanguage, speed speedAsPercentage:Float = 50.0){
+    public init(language:SiriLanguage, speedAsPercentage:Float = 50.0){
         self.voice = AVSpeechSynthesisVoice(language: language.rawValue)
-        self.speedRate = min(max(speedAsPercentage, 0.0), 100.0)
+        
+        let speedRateAsPercentage = min(max(speedAsPercentage, 0.0), 100.0) // Limit between 0 and 100
+        speedRate = (AVSpeechUtteranceMaximumSpeechRate-AVSpeechUtteranceMinimumSpeechRate)*(speedRateAsPercentage/100.0)
     }
     
     public func speak(text: String){
@@ -22,7 +24,7 @@ public class SiriDriver{
         let textToSpeak = AVSpeechUtterance(string: text)
         textToSpeak.voice = self.voice
         
-        textToSpeak.rate = (AVSpeechUtteranceMaximumSpeechRate-AVSpeechUtteranceMinimumSpeechRate)*speedRate
+        textToSpeak.rate = self.speedRate
         
         syntheSizer = AVSpeechSynthesizer()
         syntheSizer.pauseSpeaking(at: .word)
